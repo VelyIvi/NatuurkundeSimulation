@@ -11,7 +11,7 @@ areaMove = (4*PI*ballRadius*ballRadius)/2 #m^2
 DragCoef = 0.47
 
 time = 0.0
-dT = 10 #seconds delta
+dT = 1 #seconds delta
 
 massEarth = 5.972 * pow(10, 24)
 gravityConstant = 6.67430* pow(10, -11)
@@ -23,6 +23,8 @@ heightList = []
 speedList = []
 accelList = []
 airList = []
+airPressureList = []
+
 
 #https://en.wikipedia.org/wiki/Density_of_air
 SLSAPressure = 101325.0
@@ -39,19 +41,14 @@ def calcGrav():
     return gravityConstant * ((massEarth*mass)/(pow(height+earthRad, 2)))
 
 def calcAirPressure():
-    if(height<=18000):
+    if(height<=20000):
         pressure = SLSAPressure*pow((1-(LRTemperature*height)/SLSTemperature), ((ESGAcceleration*MolarMass)/(IGConstant*LRTemperature)))
+        airPressureList.append(pressure)
         return pressure
-    elif height > 18000 and height < 50000:
-        return 100
-        # return lerp(600, 100, (50000-18000)/(height-18000))
-    elif height > 50000 and height < 85000:
-        return 1
-    elif height > 85000 and height < 690000:
-        return .1
-    elif height > 690000:
+    elif height > 20000:
+        airPressureList.append(0)
         return 0
-    return 0
+
 def calcAirDensity():
     press = calcAirPressure()
     return (press*MolarMass)/(IGConstant*(SLSTemperature-LRTemperature*height))
@@ -84,10 +81,26 @@ while height > 0.0:
     accelList.append(accel)
 
 
-plt.plot(heightList, airList, color='red', linewidth = .5)
+fig, axs = plt.subplots(2, 2)
 # plt.gca().invert_xaxis()
 
-plt.xlabel('height')
-plt.ylabel('speed')
-plt.grid(True)
+axs[0,0].plot(timeList, heightList, color='red', linewidth = 1.5)
+axs[0,0].set_xlabel('Time (s)')
+axs[0,0].set_ylabel('Height (m)')
+
+axs[1,0].plot(timeList, speedList, color='red', linewidth = 1.5)
+axs[1,0].set_xlabel('Time (s)')
+axs[1,0].set_ylabel('Speed (m/s)')
+
+axs[0,1].plot(timeList, airList, color='red', linewidth = 1.5)
+axs[0,1].set_xlabel('Time (s)')
+axs[0,1].set_ylabel('Air Resistance (N)')
+
+
+axs[1,1].plot(timeList, accelList, color='red', linewidth = 1.5)
+axs[1,1].set_xlabel('Time (s)')
+axs[1,1].set_ylabel('Acceleration (m/s/s)')
+
+fig.tight_layout()
+
 plt.show()
