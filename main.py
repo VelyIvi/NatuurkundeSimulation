@@ -11,11 +11,19 @@ areaMove = (4*PI*ballRadius*ballRadius)/2 #m^2
 DragCoef = 0.47
 
 time = 0.0
-dT = .00001 #seconds delta
+dT = .0000001 #seconds delta
 
 massEarth = 5.972 * pow(10, 24)
 gravityConstant = 6.67430* pow(10, -11)
 earthRad = 6371000
+
+#https://en.wikipedia.org/wiki/Density_of_air
+SLSAPressure = 101325.0
+SLSTemperature = 288.15
+ESGAcceleration = 9.80665
+LRTemperature = 0.0065
+IGConstant = 8.31446
+MolarMass = 0.0289652
 
 
 timeList = []
@@ -27,17 +35,6 @@ airPressureList = []
 jouleList = []
 gravList = []
 
-#https://en.wikipedia.org/wiki/Density_of_air
-SLSAPressure = 101325.0
-SLSTemperature = 288.15
-ESGAcceleration = 9.80665
-LRTemperature = 0.0065
-IGConstant = 8.31446
-MolarMass = 0.0289652
-
-def lerp(A, B, t):
-    print(A + (B-A)*t)
-    return A + (B-A)*t
 def calcGrav():
     return gravityConstant * ((massEarth*mass)/(pow(height+earthRad, 2)))
 
