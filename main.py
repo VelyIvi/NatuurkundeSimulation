@@ -11,7 +11,7 @@ areaMove = (4*PI*ballRadius*ballRadius)/2 #m^2
 DragCoef = 0.47
 
 time = 0.0
-dT = 1 #seconds delta
+dT = .00001 #seconds delta
 
 massEarth = 5.972 * pow(10, 24)
 gravityConstant = 6.67430* pow(10, -11)
@@ -24,7 +24,8 @@ speedList = []
 accelList = []
 airList = []
 airPressureList = []
-
+jouleList = []
+gravList = []
 
 #https://en.wikipedia.org/wiki/Density_of_air
 SLSAPressure = 101325.0
@@ -60,9 +61,10 @@ def calcAirConst():
 
 def calcAirRes():
     con = calcAirConst()
-    return con*v*v
+    return con*pow(v,2)
 
 accel = 0
+joule = 0
 
 while height > 0.0:
     time += dT
@@ -70,16 +72,21 @@ while height > 0.0:
     Air = calcAirRes()
     Grav = calcGrav()
 
-    v += accel*dT
     accel = (Grav-Air)/mass
-    height -= v*dT
-    timeList.append(time)
+    v += accel * dT
+    height -= v * dT
+    joule = 1/2 * mass * v*v
 
+    timeList.append(time)
     heightList.append(height)
     speedList.append(v)
     airList.append(Air)
     accelList.append(accel)
+    jouleList.append(joule)
+    gravList.append(Grav)
 
+
+print("Joule: ", joule, " Speed: ", v)
 
 fig, axs = plt.subplots(2, 2)
 # plt.gca().invert_xaxis()
