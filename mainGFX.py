@@ -1,4 +1,11 @@
+# Import module
+import tkinter as tk
 import matplotlib.pyplot as plt
+
+
+# Create object
+root = tk.Tk()
+
 
 PI = 3.14159265359
 
@@ -11,7 +18,7 @@ areaMove = (4*PI*ballRadius*ballRadius)/2 #m^2
 DragCoef = 0.47
 
 time = 0.0
-dT = .0001 #seconds delta
+dT = 0.01 #seconds delta
 
 massEarth = 5.972 * pow(10, 24)
 gravityConstant = 6.67430* pow(10, -11)
@@ -83,26 +90,84 @@ while height > 0.0:
     gravList.append(Grav)
 
 
-print("Joule: ", joule, " Speed: ", v)
+options1 = [
+    "Tijd",
+    "Hoogte"
+]
 
-fig, axs = plt.subplots(2, 2)
-# plt.gca().invert_xaxis()
+options1execute = [
+    timeList,
+    heightList
+]
 
-axs[0,0].plot(speedList, jouleList, color='red', linewidth = 1.5)
-axs[0,0].set_xlabel('Speed (m/s)')
-axs[0,0].set_ylabel('Energy (J)')
+options1label = [
+    "Tijd (s)",
+    "Hoogte (m)"
+]
 
-axs[1,0].plot(heightList, airPressureList, color='red', linewidth = 1.5)
-axs[1,0].set_xlabel('Height (m)')
-axs[1,0].set_ylabel('Air pressure (Pa)')
+options2 = [
+    "Hoogte",
+    "Snelheid",
+    "Luchtweerstand",
+    "Acceleratie",
+    "Energie",
+    "Zwaartekracht",
+    "Luchtdruk"
+]
 
-axs[0,1].plot(timeList, jouleList, color='red', linewidth = 1.5)
-axs[0,1].set_xlabel('Time (s)')
-axs[0,1].set_ylabel('Energy (J)')
+options2execute = [
+    heightList,
+    speedList,
+    airList,
+    accelList,
+    jouleList,
+    gravList,
+    airPressureList
+]
+
+options2label = [
+    "Hoogte (m)",
+    "Snelheid (m/s)",
+    "Luchtweerstand (N)",
+    "Acceleratie (m/s/s)",
+    "Energie (J)",
+    "Zwaartekracht (N)",
+    "Luchtdruk (Pa)"
+]
 
 
-axs[1,1].plot(timeList, gravList, color='red', linewidth = 1.5)
-axs[1,1].set_xlabel('Time (s)')
-axs[1,1].set_ylabel('Gravity (m/s/s)')
+def sGraph():
+    result1 = options1.index(clicked1.get())
+    result2 = options2.index(clicked2.get())
+    plt.plot(options1execute[result1], options2execute[result2], color='red', linewidth=1.5)
+    plt.xlabel(options1label[result1])
+    plt.ylabel(options2label[result2])
+    if clicked1.get() == "Hoogte":
+        plt.gca().invert_xaxis()
+    plt.show()
 
-plt.show()
+
+# Adjust size
+root.geometry( "400x400" )
+
+
+# Dropdown menu options
+
+
+clicked1 = tk.StringVar()
+        
+clicked1.set(options1[0])
+
+clicked2 = tk.StringVar()
+
+clicked2.set(options2[0])
+
+drop1 = tk.OptionMenu( root , clicked1 , *options1 )
+drop1.pack()
+
+drop2 = tk.OptionMenu( root , clicked2 , *options2 )
+drop2.pack()
+# Create button, it will change label text
+button = tk.Button(root , text = "Show Graph", command=sGraph).pack()
+
+root.mainloop()
